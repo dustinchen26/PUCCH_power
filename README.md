@@ -1,53 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PUCCH Transmit Power Calculator</title>
-    
-<style>
-    /* 调整输入框的宽度 */
-    input[type="number"] {
-        width: 50px;
-    }
-</style>
-    
-</head>
-<body>
-    <h1>PUCCH Transmit Power Calculator</h1>
-	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
-	
-	<p>Ref: ETSI TS 138 213 chap 7.2 Physical uplink control channel </p>
+# PUCCH Transmit Power Calculator
+online calculate: https://dustinchen26.github.io/PUCCH_power
 
-    <pre>
-      <img src="https://raw.githubusercontent.com/dustinchen26/PUCCH_power/master/formula.png" alt="GitHub Image" width="700">    </pre>
+## Description & example
+```
+Ref: ETSI TS 138 213 chap 7.2 Physical uplink control channel
 
-	
-    <form id="pucch-form">
-	    <label><b>● Please enter the following parameters, and then press Calculate to get the PUCCH power calculation result</b><br></label>
-        <label for="p0-nominal">p0-nominal:</label>
-        <input type="number" step="any" id="p0-nominal" required value="-70"><br>
+● Please enter the following parameters, and then press Calculate to get the PUCCH power calculation result
+p0-nominal: -70
+mu: 1
+Num RB: 1
+Pathloss: 32
+Delta TF: 5
+TPC Adjustment: -2
 
-        <label for="mu">mu:</label>
-        <input type="number" step="any" id="mu" required value="1"><br>
+Calculate
+PUCCH Transmit Power:
+= p0-nominal + 10*log(2^mu* Num RB )+ Pathloss+ Delta TF + TPC Adjustment
+= -70 + 10 * log10(2^1 * 1) + 32 + 5 + -2
+= -70 + 3.010 + 32 + 5 + -2
+= -31.990
 
-        <label for="num-RB">Num RB:</label>
-        <input type="number" id="num-RB" required value="1"><br>
-
-        <label for="pathloss">Pathloss:</label>
-        <input type="number" step="any" id="pathloss" required value="32"><br>
-
-        <label for="delta-TF">Delta TF:</label>
-        <input type="number" step="any" id="delta-TF" required value="5"><br>
-
-        <label for="tpc-adjustment">TPC Adjustment:</label>
-        <input type="number" step="any" id="tpc-adjustment" required value="-2"><br>
-
-        <button type="button" onclick="calculatePower()">Calculate</button>
-    </form>
-
-    <p id="result"></p>
-    <p id="calculation-details"></p>
-
-    <pre>
 ==================================================================================
 // p0-nominal=-70, mu=1
 1980/03/16 07:59:43.496	[0xB821]	BCCH_DL_SCH / SystemInformationBlockType1
@@ -91,30 +63,4 @@
          -----------------------------------------------------------------------------------
          |  0|      0|  PUCCH|     -31|      32|        -2|  23|    5|     1|     1|    -38|
 
-		</pre>
-
-    
-    <script>
-        function calculatePower() {
-            const p0_nominal = parseFloat(document.getElementById('p0-nominal').value);
-            const mu = parseFloat(document.getElementById('mu').value);
-            const num_RB = parseInt(document.getElementById('num-RB').value);
-            const pathloss = parseFloat(document.getElementById('pathloss').value);
-            const delta_TF = parseFloat(document.getElementById('delta-TF').value);
-            const tpc_adjustment = parseFloat(document.getElementById('tpc-adjustment').value);
-
-            const logPart = 10 * Math.log10(2 ** mu * num_RB);
-
-            const pucch_transmit_power = p0_nominal + logPart + pathloss + delta_TF + tpc_adjustment;
-
-            const calculationDetails = `PUCCH Transmit Power:<br>
-				=  p0-nominal + 10*log(2^mu* Num RB )+ Pathloss+ Delta TF + TPC Adjustment <br>
-                = ${p0_nominal} + 10 * log10(2^${mu} * ${num_RB}) + ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
-                = ${p0_nominal} + ${logPart.toFixed(3)} + ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
-                = ${pucch_transmit_power.toFixed(3)}`;
-            
-            document.getElementById('calculation-details').innerHTML = calculationDetails;
-        }
-    </script>
-</body>
-</html>
+```
