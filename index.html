@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PUCCH Transmit Power Calculator</title>
+    
+<style>
+    /* 调整输入框的宽度 */
+    input[type="number"] {
+        width: 50px;
+    }
+</style>
+    
+</head>
+<body>
+    <h1>PUCCH Transmit Power Calculator</h1>
+	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
+	
+	<p>Ref: ETSI TS 138 213 chap 7.2 Physical uplink control channel </p>
+
+    <pre>
+      <img src="https://raw.githubusercontent.com/dustinchen26/PUCCH_power/master/formula.png" alt="GitHub Image" width="700">    </pre>
+
+	
+    <form id="pucch-form">
+	    <label><b>● Please enter the following parameters, and then press Calculate to get the PUCCH power calculation result</b><br></label>
+        <label for="p0-nominal">p0-nominal:</label>
+        <input type="number" step="any" id="p0-nominal" required value="-70"><br>
+
+        <label for="mu">mu:</label>
+        <input type="number" step="any" id="mu" required value="1"><br>
+
+        <label for="num-RB">Num RB:</label>
+        <input type="number" id="num-RB" required value="1"><br>
+
+        <label for="pathloss">Pathloss:</label>
+        <input type="number" step="any" id="pathloss" required value="32"><br>
+
+        <label for="delta-TF">Delta TF:</label>
+        <input type="number" step="any" id="delta-TF" required value="5"><br>
+
+        <label for="tpc-adjustment">TPC Adjustment:</label>
+        <input type="number" step="any" id="tpc-adjustment" required value="-2"><br>
+
+        <button type="button" onclick="calculatePower()">Calculate</button>
+    </form>
+
+    <p id="result"></p>
+    <p id="calculation-details"></p>
+
+    <pre>
+==================================================================================
+// p0-nominal=-70, mu=1
+1980/03/16 07:59:43.496	[0xB821]	BCCH_DL_SCH / SystemInformationBlockType1
+              pucch-ConfigCommon setup : 
+                {
+                  pucch-ResourceCommon 3,
+                  pucch-GroupHopping neither,
+                  p0-nominal -70 //p0-nominal=-70
+                }
+            frequencyInfoDL 
+            {
+              scs-SpecificCarrierList 
+              {
+                {
+                  subcarrierSpacing kHz30, //mu=1
+                }
+				
+// (806,14) PUCCH, Num RB=1,
+07:59:43.645	[0xB883]	NR5G MAC UL Physical Channel Schedule Report
+   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   |   |                     |       |Carriers                                                                                                                                                          
+   |   |                     |       |       |              |                                   |      |PUCCH Data                                                                                      
+   |   |                     |       |       |              |                                   |      |     |Per PUCCH Data                                                                            
+   |   |                     |       |       |              |                                   |      |     |        |                |                              |      |       |        |        |
+   |   |                     |       |       |              |                                   |Dual  |     |Is      |                |                              |      |       |        |        |
+   |   |System Time          |Num    |Carrier|              |                                   |Pol   |Num  |Second  |                |                              |Start |Num    |Starting|        |
+   |#  |Slot|Numerology|Frame|Carrier|ID     |RNTI Type     |Phychan Bit Mask                   |Status|PUCCH|Phychan |PUCCH Format    |UCI Request BMask             |symbol|Symbols|RB      |Num RB  |
+   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   |  0|  14|     30kHz|  806|      1|      0|        C_RNTI|                              PUCCH|     0|    1|       0| PUCCH_FORMAT_F1|                  ACK_NACK_RPT|    10|      4|       0|       1|
+   
+// (806,14) PUCCH, Pathloss=32, Delta TF=5, TPC Adjustment = -2
+07:59:43.644	[0xB8D2]	NR5G LL1 FW MAC TX IU Power
+         System Frame Number       = 806
+         Slot Number               = 14
+      Power Info
+         -----------------------------------------------------------------------------------
+         |   |       |       |CarrierIdType                                                 
+         |   |       |       |PUCCH Data                                                   |
+         |   |Carrier|Channel|Transmit|        |TPC       |PHR |Delta|PUCCH |PUCCH |Minimum|
+         |#  |Id     |Type   |Power   |Pathloss|Adjustment|MTPL|TF   |Number|Format|Power  |
+         -----------------------------------------------------------------------------------
+         |  0|      0|  PUCCH|     -31|      32|        -2|  23|    5|     1|     1|    -38|
+
+		</pre>
+
+    
+    <script>
+        function calculatePower() {
+            const p0_nominal = parseFloat(document.getElementById('p0-nominal').value);
+            const mu = parseFloat(document.getElementById('mu').value);
+            const num_RB = parseInt(document.getElementById('num-RB').value);
+            const pathloss = parseFloat(document.getElementById('pathloss').value);
+            const delta_TF = parseFloat(document.getElementById('delta-TF').value);
+            const tpc_adjustment = parseFloat(document.getElementById('tpc-adjustment').value);
+
+            const logPart = 10 * Math.log10(2 ** mu * num_RB);
+
+            const pucch_transmit_power = p0_nominal + logPart + pathloss + delta_TF + tpc_adjustment;
+
+            const calculationDetails = `PUCCH Transmit Power:<br>
+				=  p0-nominal + 10*log(2^mu* Num RB )+ Pathloss+ Delta TF + TPC Adjustment <br>
+                = ${p0_nominal} + 10 * log10(2^${mu} * ${num_RB}) + ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
+                = ${p0_nominal} + ${logPart.toFixed(3)} + ${pathloss} + ${delta_TF} + ${tpc_adjustment}<br>
+                = ${pucch_transmit_power.toFixed(3)}`;
+            
+            document.getElementById('calculation-details').innerHTML = calculationDetails;
+        }
+    </script>
+</body>
+</html>
