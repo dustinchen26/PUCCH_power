@@ -14,20 +14,40 @@
     input[type="number"] {
         width: 50px;
     }
+	
+	body {
+      line-height: 1;
+      font-size: 14px;
+      font-family: Roboto, sans-serif;
+    }
+
+	pre{
+      line-height: 1;
+      font-size: 13px;
+    }
 </style>
     
 </head>
 <body>
-    <h1>PUCCH Transmit Power Calculator</h1>
+    <h2>PUCCH Transmit Power Calculator</h2>
 	<p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com" style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com" style="line-height: 1;">chuhpsdustin@gmail.com</a></p>	
-	
-	<p>Ref: ETSI TS 138 213 chap 7.2 Physical uplink control channel </p>
 
-    <pre>
-      <img src="https://raw.githubusercontent.com/dustinchen26/PUCCH_power/master/formula.png" alt="GitHub Image" width="750">    </pre>
-	
-	<label><b>Enter the following parameters and press "Calculate" to get the PUCCH power</b><br></label>	
-    
+    <ul>
+      <li>
+        <strong>Spec</strong>
+        <ul>
+          <li>
+			Ref: ETSI TS 138 213 chap 7.2 Physical uplink control channel
+		  </li>
+		  <img src="https://raw.githubusercontent.com/dustinchen26/PUCCH_power/master/formula.png" alt="GitHub Image" width="750"> 
+        </ul>	
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <strong>Enter the following parameters and press "Calculate" to get the PUCCH power</strong>
+
+
 	<form id="pucch-form">
     <ul>
         <li>		
@@ -60,6 +80,10 @@
 
     <p id="result"></p>
     <p id="calculation-details"></p>
+	
+      </li>
+    </ul>
+
 
     <pre>
 ==================================================================================
